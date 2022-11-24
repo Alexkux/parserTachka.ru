@@ -12,8 +12,8 @@ from bs4 import BeautifulSoup
 # Ссылки формируем отдельным скриптом и копируем в корень проекта
 
 #urls_file='zashita-kartera.txt'
-#urls_file='farkop.txt'
-urls_file='kreplenie-dlya-velosipeda.txt'
+urls_file='farkop.txt'
+#urls_file='kreplenie-dlya-velosipeda.txt'
 
 
 
@@ -36,6 +36,9 @@ for url in urls: #
     print(len(products), 'стр:', page)
     for product in products: # Открываем каждую карточку для парсинга
         # product_card = product.find("div", {"class": "catalog-item__summary"})
+        category = soup.find_all("span", {"itemprop": "name"})
+        category = str(category)
+        category = re.sub("[^А-я, " "]", "", category)
         name = product.find("h3", {"class": "catalog-item__head"}).text # наименование продукта
         k = name.rfind('Артикул ') # переменная для вычисления позиции подстроки
         sku = name[k+8:] # значение артикула вырезаем из наименования
@@ -46,8 +49,12 @@ for url in urls: #
             quantity = re.sub("[^0-9]", "", quantity) # удаление всех символов из строки, кроме цыфр
             if len(quantity) == 0: # если в количество ничего не записано, присваеваем ему значение 0
                 quantity = 0
-
-        all_products.append([name, sku, price, quantity]) # записываем полученные данные в массив
+        specific = product.find("div", {"class": "catalog-item__attributes attributes"}).text.strip()
+        specific = str(specific)
+        specific = re.sub('\n|\s', '', specific)
+        m = specific.rfind('ль:')
+        manufacturer = specific[m+3:]
+        all_products.append([name, sku, price, quantity, manufacturer, category]) # записываем полученные данные в массив
 
         #names = ['Наименование', 'Артикул', 'Цена', 'Количество']
 
