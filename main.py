@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 # Ссылки формируем отдельным скриптом и копируем в корень проекта
 
 #urls_file='zashita-kartera.txt'
-urls_file='farkop.txt'
+urls_file='links_for_scan.txt'
 #urls_file='kreplenie-dlya-velosipeda.txt'
 
 
@@ -33,7 +33,7 @@ for url in urls: #
     soup = BeautifulSoup(html, "html.parser")
     products = soup.find_all("div", {"class": "catalog-item"}) # Получаем массив экземпляров карточки товара
     page +=1
-    print(len(products), 'стр:', page)
+    print(len(products), 'стр:', page, 'ссылка:', url)
     for product in products: # Открываем каждую карточку для парсинга
         # product_card = product.find("div", {"class": "catalog-item__summary"})
         category = soup.find_all("span", {"itemprop": "name"})
@@ -58,10 +58,10 @@ for url in urls: #
 
         #names = ['Наименование', 'Артикул', 'Цена', 'Количество']
 
-        out_file = urls_file.replace('txt','csv') # создаём наименование файла выгрузки
+        #out_file = urls_file.replace('txt','csv') # создаём наименование файла выгрузки
+        out_file = 'out_file.csv'
 
-
-        with open(out_file, "w", encoding='cp1251', newline='') as f:
+        with open(out_file, "w", newline='') as f:
             writer = csv.writer(f, delimiter='\t')
             #writer.writerow(names) # первая строка с заголовками столбцов
             for product in all_products: # Построчная запись в файл значений из массива
